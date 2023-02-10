@@ -5,6 +5,7 @@ import ru.job4j.accidents.model.Accident;
 import ru.job4j.accidents.repository.AccidentRepository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class AccidentService {
@@ -21,5 +22,13 @@ public class AccidentService {
 
     public Collection<Accident> getAll() {
         return accidentRepository.getAll();
+    }
+
+    public Optional<Accident> findById(int id) {
+        return accidentRepository.findById(id);
+    }
+
+    public boolean replace(Accident accident) {
+        return accidentRepository.replace(accident);
     }
 }

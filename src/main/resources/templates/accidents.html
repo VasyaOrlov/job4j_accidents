@@ -11,7 +11,7 @@
                 integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
                 integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-        <title>Index</title>
+        <title>Инциденты</title>
     </head>
     <body>
     <div class="container">
@@ -19,10 +19,8 @@
             <a class="navbar-brand" href="#">Автонарушители</a>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link active" href="#">
-                        <span th:text="${user}"></span>
-                        <span class="sr-only">(current)</span>
-                    </a>
+                    <a class="nav-item nav-link active" th:href="@{/accidents}">Инциденты<span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link " th:href="@{/createAccident}">Добавить инцидент</a>
                 </div>
             </div>
         </nav>
@@ -41,7 +39,7 @@
                 <tbody>
                 <tr th:each="accident: ${accidents}">
                     <td th:text="${accident.id}"></td>
-                    <td th:text="${accident.name}"></td>
+                    <td><a th:text="${accident.name}" th:href="@{/updateAccident/{id}(id=${accident.id})}"></a></td>
                     <td th:text="${accident.text}"></td>
                     <td th:text="${accident.address}"></td>
                 </tr>

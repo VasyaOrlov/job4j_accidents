@@ -14,7 +14,6 @@ import ru.job4j.accidents.service.AccidentTypeService;
 import ru.job4j.accidents.service.RuleService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,14 +46,14 @@ public class AccidentController {
     @PostMapping("/saveAccident")
     public String save(@ModelAttribute Accident accident, HttpServletRequest req) {
         String[] ids = req.getParameterValues("rIds");
-        System.out.println(Arrays.toString(ids));
         Set<Rule> ruleList = ruleService.findByIds(ids);
         Optional<AccidentType> at = typeService.findById(accident.getType().getId());
-        if (ruleList.size() == ids.length && at.isPresent()) {
-            accident.setRules(ruleList);
-            accident.setType(at.get());
-            accidentService.add(accident);
+        if (ruleList.size() != ids.length || at.isEmpty()) {
+            return "redirect:/showError";
         }
+        accident.setRules(ruleList);
+        accident.setType(at.get());
+        accidentService.add(accident);
         return "redirect:/accidents";
     }
 
@@ -75,11 +74,17 @@ public class AccidentController {
         String[] ids = req.getParameterValues("rIds");
         Set<Rule> ruleList = ruleService.findByIds(ids);
         Optional<AccidentType> at = typeService.findById(accident.getType().getId());
-        if (ruleList.size() == ids.length && at.isPresent()) {
-            accident.setRules(ruleList);
-            accident.setType(at.get());
-            accidentService.replace(accident);
+        if (ruleList.size() != ids.length || at.isEmpty()) {
+            return "redirect:/showError";
         }
+        accident.setRules(ruleList);
+        accident.setType(at.get());
+        accidentService.replace(accident);
         return "redirect:/accidents";
+    }
+
+    @GetMapping("/showError")
+    public String error() {
+        return "showError";
     }
 }

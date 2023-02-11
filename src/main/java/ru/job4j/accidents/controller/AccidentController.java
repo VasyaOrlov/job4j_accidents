@@ -7,15 +7,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.accidents.model.Accident;
-import ru.job4j.accidents.model.AccidentType;
-import ru.job4j.accidents.model.Rule;
 import ru.job4j.accidents.service.AccidentService;
 import ru.job4j.accidents.service.AccidentTypeService;
 import ru.job4j.accidents.service.RuleService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import java.util.Set;
 
 @Controller
 public class AccidentController {
@@ -45,15 +42,10 @@ public class AccidentController {
 
     @PostMapping("/saveAccident")
     public String save(@ModelAttribute Accident accident, HttpServletRequest req) {
-        String[] ids = req.getParameterValues("rIds");
-        Set<Rule> ruleList = ruleService.findByIds(ids);
-        Optional<AccidentType> at = typeService.findById(accident.getType().getId());
-        if (ruleList.size() != ids.length || at.isEmpty()) {
+        boolean rsl = accidentService.add(accident, req.getParameterValues("rIds"));
+        if (!rsl) {
             return "redirect:/showError";
         }
-        accident.setRules(ruleList);
-        accident.setType(at.get());
-        accidentService.add(accident);
         return "redirect:/accidents";
     }
 
@@ -71,15 +63,10 @@ public class AccidentController {
 
     @PostMapping("/updateAccident")
     public String update(@ModelAttribute Accident accident, HttpServletRequest req) {
-        String[] ids = req.getParameterValues("rIds");
-        Set<Rule> ruleList = ruleService.findByIds(ids);
-        Optional<AccidentType> at = typeService.findById(accident.getType().getId());
-        if (ruleList.size() != ids.length || at.isEmpty()) {
+                boolean rsl = accidentService.replace(accident, req.getParameterValues("rIds"));
+        if (!rsl) {
             return "redirect:/showError";
         }
-        accident.setRules(ruleList);
-        accident.setType(at.get());
-        accidentService.replace(accident);
         return "redirect:/accidents";
     }
 

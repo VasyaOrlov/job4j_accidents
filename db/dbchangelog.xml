@@ -8,4 +8,9 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
 		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
 		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    <include file="scripts/001_create_table_accident_type_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/002_ddl_create_accident_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/003_ddl_create_rule_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/004_ddl_create_accident_rule_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/005_dml_insert_type_rule_in_tables.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

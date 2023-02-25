@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.accidents.model.Accident;
-import ru.job4j.accidents.service.AccidentService;
-import ru.job4j.accidents.service.AccidentTypeService;
-import ru.job4j.accidents.service.RuleService;
+import ru.job4j.accidents.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -17,11 +15,13 @@ import java.util.Optional;
 @Controller
 public class AccidentController {
 
-    private final AccidentService accidentService;
-    private final AccidentTypeService typeService;
-    private final RuleService ruleService;
+    private final JdbcAccidentService accidentService;
+    private final JdbcAccidentTypeService typeService;
+    private final JdbcRuleService ruleService;
 
-    public AccidentController(AccidentService accidentService, AccidentTypeService typeService, RuleService ruleService) {
+    public AccidentController(JdbcAccidentService accidentService,
+                              JdbcAccidentTypeService typeService,
+                              JdbcRuleService ruleService) {
         this.accidentService = accidentService;
         this.typeService = typeService;
         this.ruleService = ruleService;

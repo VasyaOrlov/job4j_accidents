@@ -39,8 +39,6 @@ public class JdbcAccidentService {
 
     public Collection<Accident> getAll() {
         return accidentRepository.getAll().stream().peek(accident -> {
-            Optional<AccidentType> opType = typeService.findById(accident.getType().getId());
-            opType.ifPresent(accident::setType);
             Set<Rule> rules = ruleService.findAllForAccident(accident.getId());
             accident.setRules(rules);
         }).collect(Collectors.toList());
@@ -50,15 +48,10 @@ public class JdbcAccidentService {
         Optional<Accident> accident = accidentRepository.findById(id);
         if (accident.isPresent()) {
             Accident rsl = accident.get();
-            Optional<AccidentType> opType = typeService.findById(rsl.getType().getId());
-            if (opType.isEmpty()) {
-                return Optional.empty();
-            }
             Set<Rule> rules = ruleService.findAllForAccident(rsl.getId());
             if (rules.isEmpty()) {
                 return Optional.empty();
             }
-            rsl.setType(opType.get());
             rsl.setRules(rules);
             return Optional.of(rsl);
         }

@@ -1,7 +1,6 @@
 package ru.job4j.accidents.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -17,8 +16,25 @@ import java.util.Optional;
 public class JdbcAccidentRepository {
     private static final String ADD_ACCIDENT = "insert into accident (name, text, "
             + "address, accident_type_id) values (?, ?, ?, ?)";
-    private static final String GET_ALL = "select * from accident";
-    private static final String FIND_BY_ID = "select * from accident where id = ?";
+    private static final String GET_ALL = "select "
+            + "accident.id acc_id, "
+            + "accident.name acc_name, "
+            + "accident.text acc_text, "
+            + "accident.address acc_address, "
+            + "accident_type.id acc_type_id, "
+            + "accident_type.name acc_type_name "
+            + "from accident "
+            + "join accident_type on accident.accident_type_id = accident_type.id ";
+    private static final String FIND_BY_ID = "select "
+            + "accident.id acc_id, "
+            + "accident.name acc_name, "
+            + "accident.text acc_text, "
+            + "accident.address acc_address, "
+            + "accident_type.id acc_type_id, "
+            + "accident_type.name acc_type_name "
+            + "from accident "
+            + "join accident_type on accident.accident_type_id = accident_type.id "
+            + "where accident.id = ?";
     private static final String UPDATE_ACCIDENT = "update accident set name = ?, text = ?, "
             + "address = ?, accident_type_id = ? where id = ?";
     private static final String DELETE_ACCIDENT_RULE = "delete from accident_rule where accident_id = ?";
@@ -52,12 +68,28 @@ public class JdbcAccidentRepository {
 
     public List<Accident> getAll() {
         return jdbc.query(GET_ALL,
-                getRowMapper());
+                (rs, row) -> {
+                    Accident accident = new Accident();
+                    accident.setId(rs.getInt("acc_id"));
+                    accident.setName(rs.getString("acc_name"));
+                    accident.setText(rs.getString("acc_text"));
+                    accident.setAddress(rs.getString("acc_address"));
+                    accident.setType(new AccidentType(rs.getInt("acc_type_id"), rs.getString("acc_type_name")));
+                    return accident;
+                });
     }
 
     public Optional<Accident> findById(int id) {
         Accident rsl = jdbc.queryForObject(FIND_BY_ID,
-                getRowMapper(),
+                (rs, row) -> {
+                    Accident accident = new Accident();
+                    accident.setId(rs.getInt("acc_id"));
+                    accident.setName(rs.getString("acc_name"));
+                    accident.setText(rs.getString("acc_text"));
+                    accident.setAddress(rs.getString("acc_address"));
+                    accident.setType(new AccidentType(rs.getInt("acc_type_id"), rs.getString("acc_type_name")));
+                    return accident;
+                },
                 id);
         return Optional.ofNullable(rsl);
     }
@@ -74,17 +106,5 @@ public class JdbcAccidentRepository {
         accident.getRules().stream().map(Rule::getId).
                 forEach(idRule -> jdbc.update(ADD_ACCIDENT_RULE, idAccident, idRule));
         return true;
-    }
-
-    private RowMapper<Accident> getRowMapper() {
-        return (rs, row) -> {
-            Accident accident = new Accident();
-            accident.setId(rs.getInt("id"));
-            accident.setName(rs.getString("name"));
-            accident.setText(rs.getString("text"));
-            accident.setAddress(rs.getString("address"));
-            accident.setType(new AccidentType(rs.getInt("accident_type_id"), ""));
-            return accident;
-        };
     }
 }

@@ -9,8 +9,7 @@ import ru.job4j.accidents.model.AccidentType;
 import ru.job4j.accidents.model.Rule;
 
 import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class JdbcAccidentRepository {
@@ -22,18 +21,27 @@ public class JdbcAccidentRepository {
             + "accident.text acc_text, "
             + "accident.address acc_address, "
             + "accident_type.id acc_type_id, "
-            + "accident_type.name acc_type_name "
+            + "accident_type.name acc_type_name, "
+            + "rule.id rule_id, "
+            + "rule.name rule_name "
             + "from accident "
-            + "join accident_type on accident.accident_type_id = accident_type.id ";
+            + "join accident_type on accident.accident_type_id = accident_type.id "
+            + "left join accident_rule on accident.id = accident_rule.accident_id "
+            + "left join rule on accident_rule.rule_id = rule.id "
+            + "order by accident.id asc";
     private static final String FIND_BY_ID = "select "
             + "accident.id acc_id, "
             + "accident.name acc_name, "
             + "accident.text acc_text, "
             + "accident.address acc_address, "
             + "accident_type.id acc_type_id, "
-            + "accident_type.name acc_type_name "
+            + "accident_type.name acc_type_name, "
+            + "rule.id rule_id, "
+            + "rule.name rule_name "
             + "from accident "
             + "join accident_type on accident.accident_type_id = accident_type.id "
+            + "left join accident_rule on accident.id = accident_rule.accident_id "
+            + "left join rule on accident_rule.rule_id = rule.id "
             + "where accident.id = ?";
     private static final String UPDATE_ACCIDENT = "update accident set name = ?, text = ?, "
             + "address = ?, accident_type_id = ? where id = ?";
@@ -68,28 +76,54 @@ public class JdbcAccidentRepository {
 
     public List<Accident> getAll() {
         return jdbc.query(GET_ALL,
-                (rs, row) -> {
-                    Accident accident = new Accident();
-                    accident.setId(rs.getInt("acc_id"));
-                    accident.setName(rs.getString("acc_name"));
-                    accident.setText(rs.getString("acc_text"));
-                    accident.setAddress(rs.getString("acc_address"));
-                    accident.setType(new AccidentType(rs.getInt("acc_type_id"), rs.getString("acc_type_name")));
-                    return accident;
+                (rs) -> {
+                    List<Accident> accidents = new ArrayList<>();
+                    while (rs.next()) {
+                        Accident accident = new Accident();
+                        accident.setId(rs.getInt("acc_id"));
+                        accident.setName(rs.getString("acc_name"));
+                        accident.setText(rs.getString("acc_text"));
+                        accident.setAddress(rs.getString("acc_address"));
+                        accident.setType(new AccidentType(rs.getInt(
+                                "acc_type_id"),
+                                rs.getString("acc_type_name")));
+                        accident.setRules(new HashSet<>());
+                        Rule rule = new Rule(rs.getInt("rule_id"), rs.getString("rule_name"));
+                        int id = accidents.indexOf(accident);
+                        if (id == -1) {
+                            accident.getRules().add(rule);
+                            accidents.add(accident);
+                        } else {
+                            accidents.get(id).getRules().add(rule);
+                        }
+                    }
+                    return accidents;
                 });
     }
 
     public Optional<Accident> findById(int id) {
-        Accident rsl = jdbc.queryForObject(FIND_BY_ID,
-                (rs, row) -> {
-                    Accident accident = new Accident();
+        Accident rsl = jdbc.query(FIND_BY_ID,
+                (rs) -> {
+            Accident accident = null;
+            while (rs.next()) {
+                if (accident == null) {
+                    accident = new Accident();
                     accident.setId(rs.getInt("acc_id"));
                     accident.setName(rs.getString("acc_name"));
                     accident.setText(rs.getString("acc_text"));
                     accident.setAddress(rs.getString("acc_address"));
-                    accident.setType(new AccidentType(rs.getInt("acc_type_id"), rs.getString("acc_type_name")));
-                    return accident;
-                },
+                    accident.setType(new AccidentType(rs.getInt(
+                            "acc_type_id"),
+                            rs.getString("acc_type_name")));
+                    accident.setRules(new HashSet<>());
+                }
+                Rule rule = new Rule(rs.getInt("rule_id"), rs.getString("rule_name"));
+                Set<Rule> rules = accident.getRules();
+                rules.add(rule);
+                accident.setRules(rules);
+            }
+            return accident;
+            },
                 id);
         return Optional.ofNullable(rsl);
     }

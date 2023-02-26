@@ -5,10 +5,10 @@ import ru.job4j.accidents.model.Accident;
 import ru.job4j.accidents.model.AccidentType;
 import ru.job4j.accidents.model.Rule;
 import ru.job4j.accidents.repository.JdbcAccidentRepository;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class JdbcAccidentService {
@@ -38,24 +38,12 @@ public class JdbcAccidentService {
     }
 
     public Collection<Accident> getAll() {
-        return accidentRepository.getAll().stream().peek(accident -> {
-            Set<Rule> rules = ruleService.findAllForAccident(accident.getId());
-            accident.setRules(rules);
-        }).collect(Collectors.toList());
+
+        return accidentRepository.getAll();
     }
 
     public Optional<Accident> findById(int id) {
-        Optional<Accident> accident = accidentRepository.findById(id);
-        if (accident.isPresent()) {
-            Accident rsl = accident.get();
-            Set<Rule> rules = ruleService.findAllForAccident(rsl.getId());
-            if (rules.isEmpty()) {
-                return Optional.empty();
-            }
-            rsl.setRules(rules);
-            return Optional.of(rsl);
-        }
-        return accident;
+        return accidentRepository.findById(id);
     }
 
     public boolean replace(Accident accident, String[] ids) {

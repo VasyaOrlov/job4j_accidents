@@ -23,8 +23,4 @@ public class JdbcRuleService {
     public Set<Rule> findByIds(String[] ids) {
         return ruleRepository.findByIds(Stream.of(ids).map(Integer::valueOf).toList());
     }
-
-    public Set<Rule> findAllForAccident(int idAccident) {
-        return ruleRepository.findRulesByIdAccident(idAccident);
-    }
 }

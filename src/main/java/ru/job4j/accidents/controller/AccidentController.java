@@ -1,5 +1,6 @@
 package ru.job4j.accidents.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,19 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Controller
+@AllArgsConstructor
 public class AccidentController {
 
-    private final JdbcAccidentService accidentService;
-    private final JdbcAccidentTypeService typeService;
-    private final JdbcRuleService ruleService;
-
-    public AccidentController(JdbcAccidentService accidentService,
-                              JdbcAccidentTypeService typeService,
-                              JdbcRuleService ruleService) {
-        this.accidentService = accidentService;
-        this.typeService = typeService;
-        this.ruleService = ruleService;
-    }
+    private final HbmAccidentService accidentService;
+    private final HbmAccidentTypeService typeService;
+    private final HbmRuleService ruleService;
 
     @GetMapping("/accidents")
     public String accidents(Model model) {

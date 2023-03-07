@@ -17,9 +17,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AccidentController {
 
-    private final HbmAccidentService accidentService;
-    private final HbmAccidentTypeService typeService;
-    private final HbmRuleService ruleService;
+    private final JpaAccidentService accidentService;
+    private final JpaAccidentTypeService typeService;
+    private final JpaRuleService ruleService;
 
     @GetMapping("/accidents")
     public String accidents(Model model) {

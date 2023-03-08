@@ -1,6 +1,7 @@
 package ru.job4j.accidents.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.job4j.accidents.model.Accident;
-import ru.job4j.accidents.service.*;
+import ru.job4j.accidents.service.JpaAccidentService;
+import ru.job4j.accidents.service.JpaAccidentTypeService;
+import ru.job4j.accidents.service.JpaRuleService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -23,12 +26,16 @@ public class AccidentController {
 
     @GetMapping("/accidents")
     public String accidents(Model model) {
+        model.addAttribute("user",
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("accidents", accidentService.getAll());
         return "accidents";
     }
 
     @GetMapping("/createAccident")
     public String viewCreateAccident(Model model) {
+        model.addAttribute("user",
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("rules", ruleService.getRules());
         model.addAttribute("types", typeService.getTypes());
         return "createAccident";
@@ -49,6 +56,8 @@ public class AccidentController {
         if (rsl.isEmpty()) {
             return "redirect:/accidents";
         }
+        model.addAttribute("user",
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("rules", ruleService.getRules());
         model.addAttribute("types", typeService.getTypes());
         model.addAttribute("accident", rsl.get());
@@ -65,7 +74,9 @@ public class AccidentController {
     }
 
     @GetMapping("/showError")
-    public String error() {
+    public String error(Model model) {
+        model.addAttribute("user",
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return "showError";
     }
 }

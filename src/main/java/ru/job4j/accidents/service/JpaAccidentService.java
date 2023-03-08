@@ -29,7 +29,7 @@ public class JpaAccidentService {
     }
 
     public Collection<Accident> getAll() {
-        return accidentRepository.findAllOrderByIdAsc();
+        return accidentRepository.findAllByOrderByIdAsc();
     }
 
     public Optional<Accident> findById(int id) {

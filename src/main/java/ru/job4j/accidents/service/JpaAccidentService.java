@@ -29,9 +29,7 @@ public class JpaAccidentService {
     }
 
     public Collection<Accident> getAll() {
-        Collection<Accident> col = new LinkedList<>();
-        accidentRepository.findAll().forEach(col::add);
-        return col;
+        return accidentRepository.findAllOrderByIdAsc();
     }
 
     public Optional<Accident> findById(int id) {

@@ -11,9 +11,25 @@
                 integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
                 integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-        <title>Инциденты</title>
+        <title>Авторизация</title>
     </head>
     <body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Автонарушители</a>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" th:href="@{/accidents}">Инциденты<span class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link " th:href="@{/createAccident}">Добавить инцидент</a>
+                    <a class="nav-item nav-link " th:href="@{/reg}">Регистрация</a>
+                </div>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link " th:href="@{/login}">Войти</a>
+                    <a class="nav-item nav-link " th:href="@{/logout}">Выйти</a>
+                </div>
+            </div>
+        </nav>
+    </div>
     <div class="container py-3">
         <main class="form-signin">
             <h1 class="h3 mb-3 fw-normal">Авторизация</h1>
@@ -35,4 +51,5 @@
             </form>
         </main>
     </div>
+    </body>
 </html>

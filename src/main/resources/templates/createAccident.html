@@ -19,8 +19,17 @@
         <a class="navbar-brand" href="#">Автонарушители</a>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link" th:href="@{/accidents}">Инциденты</a>
-                <a class="nav-item nav-link active" th:href="@{/createAccident}">Добавить инцидент<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link active" th:href="@{/accidents}">Инциденты<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link " th:href="@{/createAccident}">Добавить инцидент</a>
+                <a class="nav-item nav-link " th:href="@{/reg}">Регистрация</a>
+            </div>
+            <div class="navbar-text">
+                <span>Пользователь: </span>
+                <span th:text="${user.username}"></span>
+            </div>
+            <div class="navbar-nav">
+                <a class="nav-item nav-link " th:href="@{/login}">Войти</a>
+                <a class="nav-item nav-link " th:href="@{/logout}">Выйти</a>
             </div>
         </div>
     </nav>

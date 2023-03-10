@@ -28,9 +28,7 @@ public class LoginController {
         user.setEnabled(true);
         user.setPassword(encoder.encode(user.getPassword()));
         user.setAuthority(authorityService.findByAuthority("ROLE_USER"));
-        try {
-            userService.save(user);
-        } catch (Exception e) {
+        if (!userService.save(user)) {
             model.addAttribute("errorMessage", "Ошибка");
             return "reg";
         }

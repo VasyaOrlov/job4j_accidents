@@ -9,7 +9,12 @@ import ru.job4j.accidents.repository.JpaUserRepository;
 @AllArgsConstructor
 public class JpaUserService {
     private final JpaUserRepository userRepository;
-    public void save(User user) {
-        userRepository.save(user);
+    public boolean save(User user) {
+        try {
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

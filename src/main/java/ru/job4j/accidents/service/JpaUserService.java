@@ -17,7 +17,7 @@ public class JpaUserService {
             userRepository.save(user);
             rsl = true;
         } catch (Exception e) {
-            log.error("Ошибка при регистрации");
+            log.error("Ошибка при регистрации: " + e.getMessage(), e);
         }
         return rsl;
     }

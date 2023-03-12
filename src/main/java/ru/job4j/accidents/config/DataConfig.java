@@ -21,7 +21,6 @@ import javax.sql.DataSource;
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
 public class DataConfig {
-
     @Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds) {

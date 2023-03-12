@@ -1,8 +1,11 @@
 package ru.job4j.accidents.config;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -15,6 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories("ru.job4j.accidents.repository")
+@PropertySource("classpath:db.properties")
 @EnableTransactionManagement
 public class DataConfig {
 
@@ -35,5 +39,18 @@ public class DataConfig {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
+    }
+
+    @Bean
+    public DataSource ds(@Value("${jdbc.driver}") String driver,
+                         @Value("${jdbc.url}") String url,
+                         @Value("${jdbc.username}") String username,
+                         @Value("${jdbc.password}") String password) {
+        BasicDataSource ds = new BasicDataSource();
+        ds.setDriverClassName(driver);
+        ds.setUrl(url);
+        ds.setUsername(username);
+        ds.setPassword(password);
+        return ds;
     }
 }
